@@ -1,19 +1,20 @@
 import { Checkbox } from './ui/checkbox'
-import { format } from 'date-fns';
+import { format, isPast, isToday } from 'date-fns';
 import { Badge } from './ui/badge';
 import { Calendar, Flag, Tag} from 'lucide-react';
 import type { Task } from '@/TodoContainer';
 import DeleteTaskDialog from './DeleteTaskDialog';
 import EditTaskDialog from './EditTaskDialog';
 
-const isOverdue = "";
-const isDueToday = "";
 
 interface TaskItemProps {
     task: Task
 }
 
 const TaskItem = ({task}: TaskItemProps) => {
+  const isOverdue = task.dueDate && !task.completed && isPast(task.dueDate) && !isToday(task.dueDate);
+  const isDueToday = task.dueDate && isToday(task.dueDate);
+
     return (
         <div className="group rounded-lg border bg-card transition-shadow hover:shadow-sm">
             <div className="flex items-center gap-2 p-4">
@@ -61,8 +62,8 @@ const TaskItem = ({task}: TaskItemProps) => {
                     </div>
                 </div>
                 <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                    <EditTaskDialog />
-                    <DeleteTaskDialog />
+                    <EditTaskDialog currentTask={task} />
+                    <DeleteTaskDialog currentTask={task} />
                 </div>
             </div>
         </div>
